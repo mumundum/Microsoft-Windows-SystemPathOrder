@@ -209,18 +209,18 @@ try {
     $pathValue = Get-MachinePathValue
     $entries = [regex]::Split($pathValue, ';')
     if ($entries | Where-Object { [string]::IsNullOrWhiteSpace($_) }) {
-        Write-Output 'Noncompliant: machine PATH contains an empty entry.'
+        Write-Output 'Non-compliant: System PATH contains an empty entry.'
         exit 1
     }
 
     $ordered = Get-OrderedPathEntries -PathValue $pathValue
     $expected = [string]::Join(';', $ordered)
     if (-not [string]::Equals($pathValue, $expected, [System.StringComparison]::Ordinal)) {
-        Write-Output 'Noncompliant: machine PATH entries are not in the required order.'
+        Write-Output 'Non-compliant: System PATH entries are not in the required order.'
         exit 1
     }
 
-    Write-Output 'Compliant: machine PATH entries are in the required order.'
+    Write-Output 'Compliant: System PATH entries are in the required order.'
     exit 0
 }
 catch {

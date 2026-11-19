@@ -211,7 +211,7 @@ try {
             $newValue,
             [System.StringComparison]::Ordinal
         )) {
-            Write-Output 'No changes required: machine PATH is already in the required order.'
+            Write-Output 'No changes required: System PATH is already in the required order.'
             exit 0
         }
 
@@ -221,7 +221,7 @@ try {
         $key.Dispose()
     }
 
-    Write-Output 'Remediated machine PATH order and removed empty entries.'
+    Write-Output 'Remediate: System PATH ordered and empty entries removed.'
     exit 0
 }
 catch {

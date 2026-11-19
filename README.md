@@ -1,6 +1,6 @@
-# Intune machine PATH order remediation
+# Intune Remediation: System PATH order
 
-These Windows PowerShell 5.1 scripts check and remediate the **machine** PATH
+These Windows PowerShell 5.1 scripts check and remediate the **System** PATH
 stored in `HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment`.
 Deploy `Detect-MachinePathOrder.ps1` as the Intune detection script and
 `Remediate-MachinePathOrder.ps1` as its remediation script. Run them in the
