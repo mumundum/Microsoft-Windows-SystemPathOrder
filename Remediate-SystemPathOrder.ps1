@@ -1,4 +1,12 @@
-﻿$ErrorActionPreference = 'Stop'
+﻿<#
+.SYNOPSIS
+Remediates the System PATH environment variable order and removes empty entries.
+
+Usage: Use this script as the "Remediation script" paired with Detect-SystemPathOrder.ps1 in Intune Remediations. Run in 64-bit PowerShell as SYSTEM.
+Return: exits with code 0 on success and code 1 if remediation fails.
+#>
+
+$ErrorActionPreference = 'Stop'
 
 function Get-NormalizedPath {
     param([Parameter(Mandatory = $true)][string]$Entry)
@@ -111,23 +119,23 @@ function Get-PathSortKey {
     )
     for ($index = 0; $index -lt $defaults.Count; $index++) {
         if ([string]::Equals(
-            $path.TrimEnd('\'),
-            $defaults[$index].TrimEnd('\'),
-            [System.StringComparison]::OrdinalIgnoreCase
-        )) {
+                $path.TrimEnd('\'),
+                $defaults[$index].TrimEnd('\'),
+                [System.StringComparison]::OrdinalIgnoreCase
+            )) {
             return [pscustomobject]@{ Group = 0; Rank = $index }
         }
     }
 
     $normalizedWindowsRoot = $WindowsRoot.TrimEnd('\')
     if ($path.StartsWith(
-        ($normalizedWindowsRoot + '\'),
-        [System.StringComparison]::OrdinalIgnoreCase
-    ) -or [string]::Equals(
-        $path,
-        $normalizedWindowsRoot,
-        [System.StringComparison]::OrdinalIgnoreCase
-    )) {
+            ($normalizedWindowsRoot + '\'),
+            [System.StringComparison]::OrdinalIgnoreCase
+        ) -or [string]::Equals(
+            $path,
+            $normalizedWindowsRoot,
+            [System.StringComparison]::OrdinalIgnoreCase
+        )) {
         return [pscustomobject]@{ Group = 0; Rank = 100 }
     }
 
@@ -139,9 +147,9 @@ function Get-PathSortKey {
     foreach ($programRoot in $programRoots) {
         $normalizedRoot = (Get-NormalizedPath -Entry $programRoot).TrimEnd('\')
         if (-not $path.StartsWith(
-            ($normalizedRoot + '\'),
-            [System.StringComparison]::OrdinalIgnoreCase
-        )) {
+                ($normalizedRoot + '\'),
+                [System.StringComparison]::OrdinalIgnoreCase
+            )) {
             continue
         }
 
@@ -173,7 +181,7 @@ function Get-OrderedPathEntries {
         [pscustomobject]@{
             Entry = $entry
             Group = $key.Group
-            Rank = $key.Rank
+            Rank  = $key.Rank
             Index = $index
         }
     }
@@ -207,11 +215,11 @@ try {
         $ordered = Get-OrderedPathEntries -PathValue ([string]$pathValue)
         $newValue = [string]::Join(';', $ordered)
         if ([string]::Equals(
-            [string]$pathValue,
-            $newValue,
-            [System.StringComparison]::Ordinal
-        )) {
-            Write-Output 'No changes required: System PATH is already in the required order.'
+                [string]$pathValue,
+                $newValue,
+                [System.StringComparison]::Ordinal
+            )) {
+            Write-Output 'Compliant: System PATH is already in the required order.'
             exit 0
         }
 

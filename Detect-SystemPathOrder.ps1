@@ -1,4 +1,12 @@
-﻿$ErrorActionPreference = 'Stop'
+﻿<#
+.SYNOPSIS
+Detects whether the System PATH is in the required order and contains no empty entries.
+
+Usage: Use this script as the "Detection script" paired with Remediate-SystemPathOrder.ps1 in Intune Remediations. Run in 64-bit PowerShell as SYSTEM.
+Return: exits with code 0 when compliant, or code 1 when remediation is needed or detection fails.
+#>
+
+$ErrorActionPreference = 'Stop'
 
 function Get-MachinePathValue {
     $key = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey(
@@ -135,23 +143,23 @@ function Get-PathSortKey {
     )
     for ($index = 0; $index -lt $defaults.Count; $index++) {
         if ([string]::Equals(
-            $path.TrimEnd('\'),
-            $defaults[$index].TrimEnd('\'),
-            [System.StringComparison]::OrdinalIgnoreCase
-        )) {
+                $path.TrimEnd('\'),
+                $defaults[$index].TrimEnd('\'),
+                [System.StringComparison]::OrdinalIgnoreCase
+            )) {
             return [pscustomobject]@{ Group = 0; Rank = $index }
         }
     }
 
     $normalizedWindowsRoot = $WindowsRoot.TrimEnd('\')
     if ($path.StartsWith(
-        ($normalizedWindowsRoot + '\'),
-        [System.StringComparison]::OrdinalIgnoreCase
-    ) -or [string]::Equals(
-        $path,
-        $normalizedWindowsRoot,
-        [System.StringComparison]::OrdinalIgnoreCase
-    )) {
+            ($normalizedWindowsRoot + '\'),
+            [System.StringComparison]::OrdinalIgnoreCase
+        ) -or [string]::Equals(
+            $path,
+            $normalizedWindowsRoot,
+            [System.StringComparison]::OrdinalIgnoreCase
+        )) {
         return [pscustomobject]@{ Group = 0; Rank = 100 }
     }
 
@@ -163,9 +171,9 @@ function Get-PathSortKey {
     foreach ($programRoot in $programRoots) {
         $normalizedRoot = (Get-NormalizedPath -Entry $programRoot).TrimEnd('\')
         if (-not $path.StartsWith(
-            ($normalizedRoot + '\'),
-            [System.StringComparison]::OrdinalIgnoreCase
-        )) {
+                ($normalizedRoot + '\'),
+                [System.StringComparison]::OrdinalIgnoreCase
+            )) {
             continue
         }
 
@@ -197,7 +205,7 @@ function Get-OrderedPathEntries {
         [pscustomobject]@{
             Entry = $entry
             Group = $key.Group
-            Rank = $key.Rank
+            Rank  = $key.Rank
             Index = $index
         }
     }
