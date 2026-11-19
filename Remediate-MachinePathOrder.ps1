@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 
 function Get-NormalizedPath {
     param([Parameter(Mandatory = $true)][string]$Entry)

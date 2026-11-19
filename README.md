@@ -1,4 +1,4 @@
-# Intune Remediation: System PATH order
+﻿# Intune Remediation: System PATH order
 
 These Windows PowerShell 5.1 scripts check and remediate the **System** PATH
 stored in `HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment`.

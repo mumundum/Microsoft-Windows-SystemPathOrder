@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 
 function Get-MachinePathValue {
     $key = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey(
