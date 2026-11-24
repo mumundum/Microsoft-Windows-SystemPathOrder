@@ -1,0 +1,16 @@
+﻿# Editor and IDE state
+.vscode/
+.vs/
+.idea/
+*.swp
+*~
+
+# Test and coverage output
+TestResults/
+coverage/
+*.coverage.xml
+
+# Operating system files
+Thumbs.db
+Desktop.ini
+.DS_Store
