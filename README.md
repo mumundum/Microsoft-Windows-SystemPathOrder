@@ -35,6 +35,20 @@ detection fails. Remediation writes the original registry value type
 to newly created environment blocks; already-running processes may need to be
 restarted.
 
+Before changing the System PATH, remediation uses `reg.exe export` to save the
+entire machine Environment registry key as a timestamped `.reg` file. The file
+can be imported manually with `reg import`. Since export and import operate on
+the whole key, restoring it also restores the other environment values from
+the time of backup. Set `$CreatePathBackup` to `$false` in the remediation
+script to disable backups.
+
+The backup directory is configured by `$BackupDirectory` at the top of both
+scripts; keep the two values in sync.
+
+To restore a backup, run `Restore-SystemPathOrder.ps1` in 64-bit PowerShell as
+SYSTEM or an administrator. It imports the newest local backup. Deploying this
+script in bulk restores each device from that device's own latest backup.
+
 Placing writable directories last is defense in depth, not a complete fix for
 command path injection: applications may still search PATH when an expected
 executable is absent. Prefer not to place user-writable directories in the

@@ -7,6 +7,8 @@ Return: exits with code 0 on success and code 1 if remediation fails.
 #>
 
 $ErrorActionPreference = 'Stop'
+$CreatePathBackup = $true
+$BackupDirectory = Join-Path $env:ProgramData 'SystemPathOrder\Backups'
 
 function Get-NormalizedPath {
     param([Parameter(Mandatory = $true)][string]$Entry)
@@ -223,6 +225,17 @@ try {
             exit 0
         }
 
+        if ($CreatePathBackup) {
+            [void][System.IO.Directory]::CreateDirectory($BackupDirectory)
+            $backupName = 'SystemPath-{0}.reg' -f [DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfffffffZ')
+            $backupPath = Join-Path $BackupDirectory $backupName
+            $regExe = Join-Path $env:windir 'System32\reg.exe'
+            & $regExe export ("HKLM\" + $registryPath) $backupPath /y
+            if ($LASTEXITCODE -ne 0) {
+                throw ("reg.exe export failed with exit code {0}." -f $LASTEXITCODE)
+            }
+        }
+
         $key.SetValue('Path', $newValue, $kind)
     }
     finally {
@@ -233,6 +246,6 @@ try {
     exit 0
 }
 catch {
-    Write-Output ("Remediation failed: {0}" -f $_.Exception.Message)
+    Write-Output ("Error: Remediation failed: {0}" -f $_.Exception.Message)
     exit 1
 }
